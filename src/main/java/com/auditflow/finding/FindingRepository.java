@@ -23,4 +23,6 @@ public interface FindingRepository extends JpaRepository<Finding, Long> {
     Optional<Finding> findByIdAndProjectOrganizationId(Long id, Long organizationId);
 
     boolean existsByIdAndProjectOrganizationId(Long id, Long organizationId);
+
+    void deleteByProject(Project project);
 }

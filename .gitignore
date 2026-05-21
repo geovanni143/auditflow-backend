@@ -31,3 +31,16 @@ temp/
 # Curl cookie test files
 cookies.txt
 register-cookies.txt
+
+
+
+# Local API test files
+login-admin.json
+login-auditor.json
+project-create.json
+project-update.json
+assign-auditor.json
+admin-cookies.txt
+auditor-cookies.txt
+cookies.txt
+register-cookies.txt
