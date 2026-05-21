@@ -24,6 +24,19 @@ spring:
     restart:
       enabled: true
 
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:auditflow-dev-secret-key-minimum-32-characters-123456}
+      expiration-ms: 86400000
+    cookie:
+      name: access_token
+      secure: false
+      same-site: Lax
+      max-age-seconds: 86400
+    cors:
+      allowed-origins: http://localhost:3000
+
 logging:
   level:
     org.springframework.security: INFO

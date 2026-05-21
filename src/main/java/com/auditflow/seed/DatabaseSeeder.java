@@ -1,10 +1,5 @@
 package com.auditflow.seed;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.auditflow.finding.Finding;
 import com.auditflow.finding.FindingRepository;
 import com.auditflow.finding.FindingStatus;
@@ -19,8 +14,11 @@ import com.auditflow.project.ProjectStatus;
 import com.auditflow.user.Role;
 import com.auditflow.user.User;
 import com.auditflow.user.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +29,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ProjectRepository projectRepository;
     private final ProjectAuditorRepository projectAuditorRepository;
     private final FindingRepository findingRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -38,8 +37,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (organizationRepository.existsByName("N3X Security Lab")) {
             return;
         }
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         Organization organization = Organization.builder()
                 .name("N3X Security Lab")
