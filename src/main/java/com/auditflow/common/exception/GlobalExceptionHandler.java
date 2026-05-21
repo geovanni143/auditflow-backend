@@ -3,6 +3,7 @@ package com.auditflow.common.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,6 +41,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiErrorResponse> handleDisabledUser(DisabledException exception) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                "User account is disabled",
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

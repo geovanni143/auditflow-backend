@@ -2,6 +2,8 @@ package com.auditflow.config;
 
 import com.auditflow.auth.security.CustomUserDetailsService;
 import com.auditflow.auth.security.JwtAuthenticationFilter;
+import com.auditflow.security.JsonAccessDeniedHandler;
+import com.auditflow.security.JsonAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +16,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,6 +28,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
+    private final JsonAuthenticationEntryPoint jsonAuthenticationEntryPoint;
+    private final JsonAccessDeniedHandler jsonAccessDeniedHandler;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +39,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jsonAuthenticationEntryPoint)
+                        .accessDeniedHandler(jsonAccessDeniedHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/health").permitAll()
@@ -52,17 +60,12 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

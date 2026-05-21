@@ -12,4 +12,12 @@ public interface ProjectAuditorRepository extends JpaRepository<ProjectAuditor, 
     List<ProjectAuditor> findByAuditor(User auditor);
 
     boolean existsByProjectAndAuditor(Project project, User auditor);
+
+    boolean existsByProjectIdAndAuditorId(Long projectId, Long auditorId);
+
+    boolean existsByProjectIdAndAuditorIdAndProjectOrganizationId(
+            Long projectId,
+            Long auditorId,
+            Long organizationId
+    );
 }

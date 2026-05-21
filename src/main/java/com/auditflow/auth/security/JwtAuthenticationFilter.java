@@ -31,21 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        cookieService.extractToken(request).ifPresent(token -> {
-            if (SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isTokenValid(token)) {
-                String email = jwtService.extractEmail(token);
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        try {
+            cookieService.extractToken(request).ifPresent(token -> {
+                if (SecurityContextHolder.getContext().getAuthentication() == null && jwtService.isTokenValid(token)) {
+                    String email = jwtService.extractEmail(token);
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        });
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            });
+        } catch (Exception exception) {
+            SecurityContextHolder.clearContext();
+        }
 
         filterChain.doFilter(request, response);
     }
