@@ -1,0 +1,6 @@
+﻿{
+  "name": "IDOR Attack Test",
+  "target": "Should Not Update",
+  "description": "This update must be blocked because the project belongs to another organization.",
+  "status": "ACTIVE"
+}

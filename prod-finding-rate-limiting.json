@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 1,
+  "title": "Missing Rate Limiting",
+  "description": "The login endpoint does not enforce enough request throttling.",
+  "recommendation": "Add rate limiting per IP and per account identifier.",
+  "evidence": "Multiple login attempts were accepted without delay.",
+  "severity": "HIGH",
+  "status": "IN_PROGRESS"
+}

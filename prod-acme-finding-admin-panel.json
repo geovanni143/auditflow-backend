@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 3,
+  "title": "Exposed Admin Panel",
+  "description": "An administrative interface is publicly reachable without network restrictions.",
+  "recommendation": "Restrict access using VPN, IP allowlisting and strong authentication controls.",
+  "evidence": "The admin path responded from an unauthenticated external network.",
+  "severity": "HIGH",
+  "status": "OPEN"
+}

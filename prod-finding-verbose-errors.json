@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 1,
+  "title": "Verbose Error Messages",
+  "description": "Some API responses expose implementation details in error messages.",
+  "recommendation": "Return generic client-facing errors and log technical details server-side.",
+  "evidence": "Stack-related information was visible in selected error responses.",
+  "severity": "LOW",
+  "status": "CLOSED"
+}

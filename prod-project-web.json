@@ -1,0 +1,6 @@
+﻿{
+  "name": "Web Application Security Audit",
+  "target": "Demo Client",
+  "description": "Main demo project for testing RBAC, project assignment, findings and filters.",
+  "status": "ACTIVE"
+}

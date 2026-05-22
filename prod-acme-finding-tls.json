@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 3,
+  "title": "Outdated TLS Configuration",
+  "description": "The service supports outdated TLS configuration that should be hardened.",
+  "recommendation": "Disable weak protocols and ciphers, then validate the configuration with a TLS scanner.",
+  "evidence": "The TLS configuration accepted legacy cipher negotiation during testing.",
+  "severity": "MEDIUM",
+  "status": "IN_PROGRESS"
+}

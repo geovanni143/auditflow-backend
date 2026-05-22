@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 1,
+  "title": "SQL Injection Risk",
+  "description": "A parameterized query is not enforced in one of the authentication-related endpoints.",
+  "recommendation": "Use parameterized queries, validate input and add automated regression tests.",
+  "evidence": "Payload example: ' OR '1'='1",
+  "severity": "CRITICAL",
+  "status": "OPEN"
+}
