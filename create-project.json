@@ -1,0 +1,6 @@
+﻿{
+  "name": "Proyecto Funcional API",
+  "target": "https://functional.example.com",
+  "description": "Proyecto creado para pruebas funcionales estrictas.",
+  "status": "ACTIVE"
+}

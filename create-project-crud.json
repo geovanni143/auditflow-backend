@@ -1,0 +1,6 @@
+﻿{
+  "name": "Proyecto CRUD Temporal",
+  "target": "https://crud-temporal.example.com",
+  "description": "Proyecto temporal para probar CRUD completo.",
+  "status": "ACTIVE"
+}

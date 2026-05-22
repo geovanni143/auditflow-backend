@@ -1,0 +1,8 @@
+﻿{
+  "title": "Finding CRUD Temporal Editado",
+  "description": "Finding temporal editado correctamente.",
+  "recommendation": "Aplicar hardening y validar entrada.",
+  "evidence": "Evidencia temporal actualizada.",
+  "severity": "HIGH",
+  "status": "IN_PROGRESS"
+}

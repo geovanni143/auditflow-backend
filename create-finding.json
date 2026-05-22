@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 5,
+  "title": "XSS reflejado en parámetro q",
+  "description": "El parámetro q refleja contenido sin escape adecuado.",
+  "recommendation": "Escapar salida HTML y aplicar validación estricta de entrada.",
+  "evidence": "Payload de prueba controlado para validar escaping.",
+  "severity": "HIGH",
+  "status": "OPEN"
+}

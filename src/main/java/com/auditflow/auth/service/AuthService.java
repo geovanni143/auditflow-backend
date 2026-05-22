@@ -1,5 +1,13 @@
 package com.auditflow.auth.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.auditflow.auth.dto.AuthUserResponse;
 import com.auditflow.auth.dto.LoginRequest;
 import com.auditflow.auth.dto.RegisterRequest;
@@ -10,15 +18,9 @@ import com.auditflow.organization.OrganizationRepository;
 import com.auditflow.user.Role;
 import com.auditflow.user.User;
 import com.auditflow.user.UserRepository;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,23 +41,33 @@ public class AuthService {
             throw new ApiException(HttpStatus.CONFLICT, "Email is already registered");
         }
 
-        String organizationName = normalizeOrganizationName(request.organizationName(), request.fullName());
+        String organizationName = normalizeOrganizationName(
+                request.organizationName(),
+                request.fullName()
+        );
 
-        Organization organization = organizationRepository.findByName(organizationName)
-                .orElseGet(() -> organizationRepository.save(
-                        Organization.builder()
-                                .name(organizationName)
-                                .description("Organization created during user registration.")
-                                .active(true)
-                                .build()
-                ));
+        organizationRepository.findByName(organizationName)
+                .ifPresent(existingOrganization -> {
+                    throw new ApiException(
+                            HttpStatus.CONFLICT,
+                            "Organization name is already registered"
+                    );
+                });
+
+        Organization organization = organizationRepository.save(
+                Organization.builder()
+                        .name(organizationName)
+                        .description("Organization created during public registration.")
+                        .active(true)
+                        .build()
+        );
 
         User user = User.builder()
                 .organization(organization)
                 .fullName(request.fullName().trim())
                 .email(email)
                 .passwordHash(passwordEncoder.encode(request.password()))
-                .role(Role.AUDITOR)
+                .role(Role.ADMIN)
                 .enabled(true)
                 .build();
 
@@ -79,7 +91,17 @@ public class AuthService {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
         User user = userRepository.findByEmail(principal.getUsername())
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
+                .orElseThrow(() -> new ApiException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid email or password"
+                ));
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new ApiException(
+                    HttpStatus.FORBIDDEN,
+                    "User account is disabled"
+            );
+        }
 
         String token = jwtService.generateToken(principal);
         cookieService.addAuthCookie(response, token);
@@ -94,7 +116,17 @@ public class AuthService {
     @Transactional(readOnly = true)
     public AuthUserResponse me(String email) {
         User user = userRepository.findByEmail(normalizeEmail(email))
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Authenticated user not found"));
+                .orElseThrow(() -> new ApiException(
+                        HttpStatus.NOT_FOUND,
+                        "Authenticated user not found"
+                ));
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new ApiException(
+                    HttpStatus.FORBIDDEN,
+                    "User account is disabled"
+            );
+        }
 
         return AuthUserResponse.from(user);
     }

@@ -1,0 +1,6 @@
+﻿{
+  "name": "Proyecto No Asignado",
+  "target": "https://not-assigned.example.com",
+  "description": "Proyecto para probar bloqueo de auditor no asignado.",
+  "status": "ACTIVE"
+}

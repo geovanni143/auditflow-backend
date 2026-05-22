@@ -1,0 +1,6 @@
+﻿{
+  "name": "Proyecto Hackeado Por Auditor",
+  "target": "https://evil.example.com",
+  "description": "Esto no debe permitirse.",
+  "status": "ACTIVE"
+}

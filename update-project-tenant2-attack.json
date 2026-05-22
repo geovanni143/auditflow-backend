@@ -1,0 +1,6 @@
+﻿{
+  "name": "Proyecto Hackeado Por Tenant 2",
+  "target": "https://tenant2-attack.example.com",
+  "description": "Esto no debería poder modificarse porque el proyecto pertenece a otra organización.",
+  "status": "ACTIVE"
+}

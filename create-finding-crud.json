@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 5,
+  "title": "Finding CRUD Temporal",
+  "description": "Finding temporal para probar edición y eliminación.",
+  "recommendation": "Corregir configuración vulnerable.",
+  "evidence": "Evidencia temporal.",
+  "severity": "MEDIUM",
+  "status": "OPEN"
+}

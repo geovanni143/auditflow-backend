@@ -1,0 +1,9 @@
+﻿{
+  "projectId": 6,
+  "title": "Finding no autorizado",
+  "description": "Este finding no debería crearse porque el auditor no está asignado.",
+  "recommendation": "Bloquear creación desde backend.",
+  "evidence": "Prueba de autorización por asignación de proyecto.",
+  "severity": "CRITICAL",
+  "status": "OPEN"
+}
