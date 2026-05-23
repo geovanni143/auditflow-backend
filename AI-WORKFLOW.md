@@ -2,167 +2,104 @@
 
 ## Purpose
 
-This document explains how AI assistance was used during the development of the AuditFlow backend.
+This document explains how AI tools were used during the development of the AuditFlow backend.
 
-AuditFlow is a fullstack MVP for managing security audit projects, assigned auditors and vulnerability findings.
+AuditFlow is a fullstack MVP for managing security audit projects, assigned auditors and vulnerability findings. The backend was built with Java and Spring Boot, with a focus on authentication, authorization, project management, findings management and multi-tenant data isolation.
 
-The backend was built with Java and Spring Boot, focusing on:
+AI was used as a support tool during development, mainly for planning, reviewing ideas, debugging issues and improving documentation. The final implementation decisions, code changes, testing and commits were handled manually by the developer.
 
-- Authentication and authorization.
-- HTTPOnly cookie-based sessions.
+---
+
+## AI Tools Used
+
+The main AI tools used during the project were:
+
+- ChatGPT
+- Claude
+
+These tools were used as development assistants to help organize the work, review the technical requirements, reason about backend security rules and troubleshoot implementation issues.
+
+AI suggestions were not accepted automatically. Each relevant suggestion was reviewed, adjusted to the real project, tested locally or in production, and committed manually.
+
+---
+
+## How AI Was Used
+
+AI was used in a practical way during the development process.
+
+The main uses were:
+
+- Breaking the technical challenge into smaller tasks.
+- Reviewing the required modules and security rules.
+- Discussing backend structure and responsibilities.
+- Creating manual testing checklists.
+- Reviewing possible RBAC and multi-tenant scenarios.
+- Helping debug deployment and production configuration issues.
+- Improving the wording and structure of project documentation.
+
+The actual implementation was still reviewed and controlled manually. I did not treat AI output as automatically correct.
+
+---
+
+## What I Implemented and Reviewed Manually
+
+The following parts were implemented, reviewed and tested manually:
+
+- Spring Boot project setup.
+- Domain model creation.
+- Entity relationships.
+- Repository definitions.
+- Service-layer logic.
+- Controllers and API endpoints.
+- Spring Security configuration.
+- JWT generation and validation.
+- HTTPOnly cookie handling.
 - Role-based access control.
-- Organization-based multi-tenant isolation.
-- Project management.
+- Project CRUD rules.
 - Auditor assignment rules.
-- Findings management.
-- Filtering and pagination.
-- Backend-side security validation.
-
-AI was used as a development assistant, not as a replacement for implementation ownership. All generated suggestions were reviewed, adapted, tested and committed manually.
-
----
-
-## Tools Used
-
-AI assistance was used through ChatGPT during the development process.
-
-The AI was mainly used for:
-
-- Breaking the project into implementation phases.
-- Reviewing technical requirements.
-- Suggesting backend structure.
-- Suggesting security test scenarios.
-- Helping debug deployment and configuration issues.
-- Improving documentation quality.
-- Reviewing manual testing flows.
-
-The final code, configuration, commits and deployment steps were executed and validated by the developer.
-
----
-
-## What Was Assisted by AI
-
-AI was used as support in the following areas:
-
-### 1. Planning and Requirement Breakdown
-
-AI helped convert the technical challenge into smaller implementation phases.
-
-Examples:
-
-- Authentication and registration.
-- RBAC rules.
-- Project CRUD.
-- Auditor assignment.
 - Findings CRUD.
 - Findings filters and pagination.
 - Multi-tenant checks.
-- Deployment preparation.
-- Documentation.
+- Deployment configuration.
+- Manual API testing with curl.
+- Production testing with Vercel, Render and Neon.
+- Git commits and repository organization.
 
-The final scope and implementation order were manually reviewed and adjusted during development.
-
----
-
-### 2. Security Design Support
-
-AI was used to discuss and validate security requirements such as:
-
-- Avoiding token storage in LocalStorage.
-- Avoiding token storage in SessionStorage.
-- Using HTTPOnly cookies for session handling.
-- Enforcing authorization in the backend.
-- Preventing auditors from accessing unassigned projects.
-- Preventing cross-tenant access between organizations.
-- Returning appropriate HTTP status codes.
-
-The final backend rules were implemented and tested manually.
-
----
-
-### 3. Documentation Support
-
-AI was used to improve documentation structure for:
-
-- README.md.
-- Database model explanation.
-- Manual testing checklist.
-- Deployment notes.
-- AI workflow explanation.
-
-The documentation was reviewed and adapted to match the real implementation.
-
----
-
-### 4. Debugging Support
-
-AI was used to reason about some issues found during development and deployment, including:
-
-- Cookie behavior between frontend and backend domains.
-- Render deployment configuration.
-- Database seeding behavior.
-- Production environment variables.
-- Multi-tenant testing scenarios.
-- Session validation flow.
-
-The fixes were applied manually and verified by running the application.
-
----
-
-## What Was Implemented and Reviewed by the Developer
-
-The developer was responsible for:
-
-- Creating and configuring the Spring Boot project.
-- Defining the domain entities.
-- Creating repositories.
-- Implementing service logic.
-- Implementing controllers.
-- Configuring Spring Security.
-- Configuring JWT creation and validation.
-- Configuring HTTPOnly cookies.
-- Implementing authorization checks.
-- Creating and testing project assignment rules.
-- Implementing findings filters and pagination.
-- Running Maven builds.
-- Testing endpoints with curl.
-- Testing the deployed application manually.
-- Managing Git commits.
-- Deploying the backend to Render.
-- Connecting the backend to Neon PostgreSQL.
-
-AI suggestions were not accepted blindly. They were checked against the project requirements and adjusted when necessary.
+AI helped with guidance and review, but the final code was tested directly by running the project and validating the behavior.
 
 ---
 
 ## Development Phases
 
-The backend was developed in controlled phases.
+The backend was developed in phases to keep the implementation controlled and easier to test.
 
-### Phase 1 — Environment Setup
+### Phase 1 — Environment and Project Setup
 
-- Java runtime configured.
-- Maven project prepared.
-- PostgreSQL local environment prepared.
-- Spring Boot application started.
+The backend project was prepared with Java, Spring Boot and Maven.
+
+PostgreSQL was used as the relational database because the domain requires clear relationships between organizations, users, projects, assigned auditors and findings.
+
+---
 
 ### Phase 2 — Domain Model
 
-Main entities were created:
+The main entities were created:
 
-- Organization.
-- User.
-- Project.
-- ProjectAuditor.
-- Finding.
+- Organization
+- User
+- Project
+- ProjectAuditor
+- Finding
 
-The model was designed to support organization-based isolation and auditor assignments.
+The model was designed around organizations because the system supports multiple tenants. Each user belongs to an organization, and each project belongs to an organization. Findings belong to projects, so they are also isolated through the project organization.
+
+---
 
 ### Phase 3 — Authentication
 
-Implemented:
+Authentication was implemented with:
 
-- Register.
+- Registration.
 - Login.
 - Logout.
 - Current user endpoint.
@@ -170,70 +107,101 @@ Implemented:
 - JWT creation.
 - HTTPOnly cookie session.
 
+The session token is not stored in LocalStorage or SessionStorage. The backend stores it in an HTTPOnly cookie.
+
+---
+
 ### Phase 4 — Authorization and RBAC
 
-Implemented two roles:
+Two roles were implemented:
 
-- ADMIN.
-- AUDITOR.
+- ADMIN
+- AUDITOR
 
-Rules:
+The intended behavior is:
 
-- Admin can manage users and projects.
-- Auditor can only work with assigned projects.
-- Authorization is enforced in the backend.
+- Admins manage their organization, projects and users.
+- Auditors only interact with projects assigned to them.
 
-### Phase 5 — Projects
+The important part is that authorization is enforced in the backend, not only by hiding buttons in the frontend.
 
-Implemented project operations:
+---
 
-- List projects.
-- Create project.
-- Update project.
-- Delete project.
-- Assign auditor to project.
+### Phase 5 — Project Management
 
-### Phase 6 — Findings
+Project management was implemented for admins.
 
-Implemented finding operations:
+Admins can:
 
-- List findings.
-- Create finding.
-- Update finding.
-- Delete finding.
-- Filter by severity.
-- Filter by status.
-- Pagination support.
+- Create projects.
+- List projects in their organization.
+- Update projects.
+- Delete projects.
+- Assign auditors to projects.
 
-### Phase 7 — Multi-tenant Validation
+Auditors can only see projects assigned to them.
 
-Implemented and tested organization isolation rules:
+---
 
-- Users belong to one organization.
-- Projects belong to one organization.
-- Findings are scoped through projects.
-- Cross-organization access is blocked.
+### Phase 6 — Findings Management
+
+Findings were implemented as vulnerabilities associated with a project.
+
+A finding includes:
+
+- Title.
+- Description.
+- Recommendation.
+- Evidence.
+- Severity.
+- Status.
+- Related project.
+- Reporting user.
+
+Findings support filtering and pagination.
+
+---
+
+### Phase 7 — Multi-tenant Isolation
+
+The backend was reviewed and tested to make sure users from one organization cannot access another organization’s data.
+
+This was important because the challenge mentions IDOR and multi-tenant data isolation.
+
+The application was tested with two organizations:
+
+- N3X Security
+- Acme Security Labs
+
+The goal was to confirm that users, projects and findings are isolated by organization.
+
+---
 
 ### Phase 8 — Deployment
 
-Backend deployment was configured using:
+The backend was deployed using:
 
-- Render.
-- Docker.
-- Neon PostgreSQL.
-- Environment variables.
+- Render for the backend.
+- Neon PostgreSQL for the database.
+- Docker for the Render deployment.
+
+Production environment variables were configured for database connection, JWT configuration, cookies and CORS.
+
+---
 
 ### Phase 9 — Documentation
 
-Documentation was added for:
+Documentation was added and improved for:
 
 - Local setup.
 - Environment variables.
 - API overview.
-- Database model.
 - Demo credentials.
 - Deployment notes.
+- Database model.
 - AI workflow.
+
+AI helped improve the structure and clarity of the documentation, but the content was adjusted to match the real implementation.
 
 ---
 
@@ -241,91 +209,276 @@ Documentation was added for:
 
 ### Java and Spring Boot
 
-Spring Boot was used because the challenge required Java and because it provides strong support for:
+Spring Boot was used because the challenge required Java and because it provides strong support for REST APIs, dependency injection, Spring Security, validation and database access through Spring Data JPA.
 
-- REST APIs.
-- Dependency injection.
-- Spring Security.
-- Spring Data JPA.
-- Validation.
-- Production deployment.
+---
 
 ### PostgreSQL
 
-PostgreSQL was used because the domain has clear relational requirements:
+PostgreSQL was selected because the application is relational by nature.
 
-- Organizations own users.
-- Organizations own projects.
+The main relationships are:
+
+- Organizations have users.
+- Organizations have projects.
 - Projects have assigned auditors.
-- Projects contain findings.
+- Projects have findings.
+- Users report findings.
+
+---
 
 ### HTTPOnly Cookie Sessions
 
 The backend stores the JWT in an HTTPOnly cookie.
 
-This decision was made to avoid exposing the token to frontend JavaScript.
+This was chosen to avoid exposing the token to frontend JavaScript.
 
 Session rules:
 
 - No token in LocalStorage.
 - No token in SessionStorage.
-- No token returned as frontend-managed state.
+- No token returned for the frontend to manually store.
 - Cookie is HTTPOnly.
-- Cookie is Secure in production.
-- Cookie uses SameSite configuration based on the environment.
+- Cookie is configured as Secure in production.
+
+---
 
 ### Backend Authorization
 
-The frontend hides or shows UI elements depending on the role, but security is enforced in the backend.
+The frontend can improve the user experience by showing or hiding actions based on the role, but the backend is responsible for real authorization.
 
-This means a user cannot bypass authorization simply by calling the API directly.
+For example:
 
-Examples:
+- An auditor cannot create projects by calling the API directly.
+- An auditor cannot update projects by calling the API directly.
+- An auditor cannot manage users.
+- An auditor cannot access projects that are not assigned to them.
+- A user cannot access resources from another organization.
 
-- Auditors cannot manage users.
-- Auditors cannot create projects.
-- Auditors cannot update projects.
-- Auditors cannot access unassigned projects.
-- Users cannot access another organization’s data.
+---
 
 ### Multi-tenant Isolation
 
-Each user belongs to an organization.
+Each user belongs to one organization.
 
-Projects are owned by an organization.
+Each project belongs to one organization.
 
-Findings belong to projects, and therefore inherit the organization scope from the project.
+Each finding belongs to a project, so the finding is scoped through the project organization.
 
-This structure was used to reduce the risk of IDOR and cross-tenant data exposure.
+This design helps prevent cross-tenant data leaks and IDOR issues.
+
+---
+
+## AI-Assisted Areas
+
+AI was most useful in these areas:
+
+### Planning
+
+AI helped turn the requirements into smaller phases and checklists.
+
+This helped keep the implementation organized instead of trying to build everything at once.
+
+---
+
+### Security Review
+
+AI was used to discuss security scenarios such as:
+
+- What an auditor should not be able to do.
+- How to avoid storing tokens in browser storage.
+- How to test IDOR scenarios.
+- How to verify organization isolation.
+- What HTTP status codes should be returned in common cases.
+
+The final behavior was tested manually through the API and browser.
+
+---
+
+### Debugging
+
+AI was used to reason about issues that appeared during development and deployment.
+
+Some examples:
+
+- Cookie behavior between Vercel and Render.
+- Backend session validation.
+- Render deployment failures.
+- Neon database connection and seed data.
+- Protected routes briefly showing content before session validation.
+
+The fixes were applied manually and tested after deployment.
+
+---
+
+### Documentation
+
+AI helped make the documentation clearer and more complete.
+
+The README and this file were reviewed so they describe the real project instead of describing a generic application.
 
 ---
 
 ## AI Mistakes and Corrections
 
-During the project, some AI suggestions required correction.
+AI was useful, but it was not always correct. Some suggestions had to be adjusted during development.
 
-### Mistake 1 — Production Cookie Behavior
+### 1. Cookie Behavior in Production
 
-Some early guidance assumed that cross-domain cookies between the Vercel frontend and Render backend would work without additional adjustments.
+At first, the session flow worked locally, but production had an issue because the frontend and backend were deployed on different domains.
 
-In practice, the deployed frontend and backend use different domains, which made session handling more sensitive.
+The frontend was on Vercel and the backend was on Render. Because of that, cookie behavior was more sensitive than in local development.
 
-Correction:
+What was corrected:
 
-- API requests were routed through the frontend domain using a Next.js rewrite/proxy.
-- The frontend API client was adjusted to call relative `/api/...` paths.
+- The frontend API client was adjusted to use relative `/api/...` paths.
+- Next.js rewrites were used to proxy API requests through the frontend domain.
 - Requests still use `credentials: "include"`.
-- The backend remains responsible for setting and validating the HTTPOnly cookie.
+- The backend remains responsible for creating and validating the HTTPOnly cookie.
 
-This improved session stability in production.
+This made the session more stable in production.
 
 ---
 
-### Mistake 2 — Automatic Database Seeder
+### 2. Automatic Database Seeder
 
-An initial seed process was useful during development, but it attempted to insert demo users again when the backend restarted in production.
+A database seeder was useful during development, but in production it caused a problem after the database already had demo users.
 
-This caused a duplicate email conflict for:
+The backend attempted to insert the same demo email again:
 
 ```txt
 admin@auditflow.local
+That caused a duplicate email error in PostgreSQL and prevented the backend from starting correctly.
+
+What was corrected:
+
+The seeder was changed so it does not run automatically by default.
+Production demo data was handled manually.
+The backend no longer crashes when Render restarts.
+
+3. Protected Page Flash
+
+A frontend issue appeared when opening protected routes directly.
+
+For a moment, a protected page could render before the session validation finished and redirected the user to login.
+
+What was corrected:
+
+Protected pages were wrapped with a route guard.
+A safe loading state is shown while the session is validated.
+Unauthenticated users are redirected to login.
+Backend authorization remains the final source of truth.
+
+This improved the user experience and prevented protected information from appearing during the initial render.
+
+Testing Approach
+
+Testing was done through a mix of local builds, API tests and browser testing.
+
+Build Verification
+
+The backend was compiled with Maven:
+
+mvn clean compile
+
+This was used to confirm that the backend compiled correctly before committing changes.
+
+Authentication Testing
+
+Tested scenarios included:
+
+Registering an organization.
+Logging in as Admin.
+Logging in as Auditor.
+Logging out.
+Calling /api/auth/me with a valid session.
+Calling protected endpoints without a valid session.
+
+Authorization Testing
+
+Tested scenarios included:
+
+Admin can list users.
+Admin can create auditors.
+Admin can create projects.
+Admin can assign auditors to projects.
+Auditor cannot list users.
+Auditor cannot create users.
+Auditor cannot create projects.
+Auditor cannot update projects.
+Auditor only sees assigned projects.
+
+Findings Testing
+
+Tested scenarios included:
+
+Auditor can create findings in assigned projects.
+Auditor cannot create findings in unassigned projects.
+Findings can be filtered by severity.
+Findings can be filtered by status.
+Findings support pagination.
+
+Multi-tenant Testing
+
+A second organization was used to validate tenant isolation.
+
+Organizations used:
+
+N3X Security
+Acme Security Labs
+
+Tested scenarios included:
+
+N3X users cannot see Acme data.
+Acme users cannot see N3X data.
+Cross-tenant project access is blocked.
+Cross-tenant findings are not exposed.
+
+Deployment Testing
+
+Production was validated with:
+
+Render backend deployment.
+Vercel frontend deployment.
+Neon PostgreSQL database.
+Backend health check.
+Demo credentials.
+Browser testing.
+Direct API testing with curl.
+
+Manual Review Process
+
+Before committing important changes, I reviewed:
+
+Whether the code matched the technical challenge.
+Whether the backend enforced the required security rules.
+Whether protected data was isolated by organization.
+Whether auditors were limited to assigned projects.
+Whether the application compiled.
+Whether endpoints returned the expected HTTP status codes.
+Whether production environment variables were configured correctly.
+Whether the deployed application could be used with the demo credentials.
+
+What I Can Explain
+
+I can explain the main technical decisions and implementation details, including:
+
+Why HTTPOnly cookies were used.
+Why LocalStorage and SessionStorage were avoided.
+How JWT validation works at a high level.
+How Admin and Auditor roles are enforced.
+How auditor assignment works.
+How projects are scoped to organizations.
+How findings are scoped through projects.
+How the backend reduces IDOR risk.
+How the deployment uses Render, Vercel and Neon.
+Why the database seeder was changed for production.
+Why the frontend uses a proxy for API requests in production.
+
+Final Notes
+
+AI was helpful during the project, especially for planning, reviewing, debugging and documentation.
+
+However, the final result was not accepted blindly from AI output. The implementation was manually reviewed, tested and adjusted to match the technical challenge.
+
+The main goal was to keep the application understandable, functional and secure enough for the MVP scope.
