@@ -348,15 +348,19 @@ The backend attempted to insert the same demo email again:
 
 ```txt
 admin@auditflow.local
+```
+
 That caused a duplicate email error in PostgreSQL and prevented the backend from starting correctly.
 
 What was corrected:
 
-The seeder was changed so it does not run automatically by default.
-Production demo data was handled manually.
-The backend no longer crashes when Render restarts.
+- The seeder was changed so it does not run automatically by default.
+- Production demo data was handled manually.
+- The backend no longer crashes when Render restarts.
 
-3. Protected Page Flash
+---
+
+### 3. Protected Page Flash
 
 A frontend issue appeared when opening protected routes directly.
 
@@ -364,118 +368,140 @@ For a moment, a protected page could render before the session validation finish
 
 What was corrected:
 
-Protected pages were wrapped with a route guard.
-A safe loading state is shown while the session is validated.
-Unauthenticated users are redirected to login.
-Backend authorization remains the final source of truth.
+- Protected pages were wrapped with a route guard.
+- A safe loading state is shown while the session is validated.
+- Unauthenticated users are redirected to login.
+- Backend authorization remains the final source of truth.
 
 This improved the user experience and prevented protected information from appearing during the initial render.
 
-Testing Approach
+---
+
+## Testing Approach
 
 Testing was done through a mix of local builds, API tests and browser testing.
 
-Build Verification
+---
+
+## Build Verification
 
 The backend was compiled with Maven:
 
+```bash
 mvn clean compile
+```
 
 This was used to confirm that the backend compiled correctly before committing changes.
 
-Authentication Testing
+---
+
+## Authentication Testing
 
 Tested scenarios included:
 
-Registering an organization.
-Logging in as Admin.
-Logging in as Auditor.
-Logging out.
-Calling /api/auth/me with a valid session.
-Calling protected endpoints without a valid session.
+- Registering an organization.
+- Logging in as Admin.
+- Logging in as Auditor.
+- Logging out.
+- Calling `/api/auth/me` with a valid session.
+- Calling protected endpoints without a valid session.
 
-Authorization Testing
+---
 
-Tested scenarios included:
-
-Admin can list users.
-Admin can create auditors.
-Admin can create projects.
-Admin can assign auditors to projects.
-Auditor cannot list users.
-Auditor cannot create users.
-Auditor cannot create projects.
-Auditor cannot update projects.
-Auditor only sees assigned projects.
-
-Findings Testing
+## Authorization Testing
 
 Tested scenarios included:
 
-Auditor can create findings in assigned projects.
-Auditor cannot create findings in unassigned projects.
-Findings can be filtered by severity.
-Findings can be filtered by status.
-Findings support pagination.
+- Admin can list users.
+- Admin can create auditors.
+- Admin can create projects.
+- Admin can assign auditors to projects.
+- Auditor cannot list users.
+- Auditor cannot create users.
+- Auditor cannot create projects.
+- Auditor cannot update projects.
+- Auditor only sees assigned projects.
 
-Multi-tenant Testing
+---
+
+## Findings Testing
+
+Tested scenarios included:
+
+- Auditor can create findings in assigned projects.
+- Auditor cannot create findings in unassigned projects.
+- Findings can be filtered by severity.
+- Findings can be filtered by status.
+- Findings support pagination.
+
+---
+
+## Multi-tenant Testing
 
 A second organization was used to validate tenant isolation.
 
 Organizations used:
 
-N3X Security
-Acme Security Labs
+- N3X Security
+- Acme Security Labs
 
 Tested scenarios included:
 
-N3X users cannot see Acme data.
-Acme users cannot see N3X data.
-Cross-tenant project access is blocked.
-Cross-tenant findings are not exposed.
+- N3X users cannot see Acme data.
+- Acme users cannot see N3X data.
+- Cross-tenant project access is blocked.
+- Cross-tenant findings are not exposed.
 
-Deployment Testing
+---
+
+## Deployment Testing
 
 Production was validated with:
 
-Render backend deployment.
-Vercel frontend deployment.
-Neon PostgreSQL database.
-Backend health check.
-Demo credentials.
-Browser testing.
-Direct API testing with curl.
+- Render backend deployment.
+- Vercel frontend deployment.
+- Neon PostgreSQL database.
+- Backend health check.
+- Demo credentials.
+- Browser testing.
+- Direct API testing with `curl`.
 
-Manual Review Process
+---
+
+## Manual Review Process
 
 Before committing important changes, I reviewed:
 
-Whether the code matched the technical challenge.
-Whether the backend enforced the required security rules.
-Whether protected data was isolated by organization.
-Whether auditors were limited to assigned projects.
-Whether the application compiled.
-Whether endpoints returned the expected HTTP status codes.
-Whether production environment variables were configured correctly.
-Whether the deployed application could be used with the demo credentials.
+- Whether the code matched the technical challenge.
+- Whether the backend enforced the required security rules.
+- Whether protected data was isolated by organization.
+- Whether auditors were limited to assigned projects.
+- Whether the application compiled.
+- Whether endpoints returned the expected HTTP status codes.
+- Whether production environment variables were configured correctly.
+- Whether the deployed application could be used with the demo credentials.
 
-What I Can Explain
+---
+
+## What I Can Explain
 
 I can explain the main technical decisions and implementation details, including:
 
-Why HTTPOnly cookies were used.
-Why LocalStorage and SessionStorage were avoided.
-How JWT validation works at a high level.
-How Admin and Auditor roles are enforced.
-How auditor assignment works.
-How projects are scoped to organizations.
-How findings are scoped through projects.
-How the backend reduces IDOR risk.
-How the deployment uses Render, Vercel and Neon.
-Why the database seeder was changed for production.
-Why the frontend uses a proxy for API requests in production.
+- Why HTTPOnly cookies were used.
+- Why LocalStorage and SessionStorage were avoided.
+- How JWT validation works at a high level.
+- How Admin and Auditor roles are enforced.
+- How auditor assignment works.
+- How projects are scoped to organizations.
+- How findings are scoped through projects.
+- How the backend reduces IDOR risk.
+- How the deployment uses Render, Vercel and Neon.
+- Why the database seeder was changed for production.
+- Why the frontend uses a proxy for API requests in production.
 
-Final Notes
+---
+
+## Final Notes
 
 AI was helpful during the project, especially for planning, reviewing, debugging and documentation.
 
