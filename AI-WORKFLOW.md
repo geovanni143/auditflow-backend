@@ -119,7 +119,7 @@ Backend testing includes:
 
 Manual testing is also documented in the project docs.
 
-## Human review
+## review
 
 AI-generated suggestions were reviewed and adapted during implementation.
 
